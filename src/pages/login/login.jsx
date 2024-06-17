@@ -1,5 +1,6 @@
 import React,{useState} from 'react'
 import './login.css'
+
 //함수형 컴포넌트 이름은 대문자로 시작해야한다. 안 그러면 리액트가 이를 일반 함수로 간주하게 된다.
 export const Login = () => {
     // 상태변수인 id와 password를 정의해주고 , 초깃값 설정, 이들을 업데이트할 setID setPassword 정의까지
