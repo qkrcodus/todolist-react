@@ -9,6 +9,7 @@ background: white;
 border-radius:20px;
 
 `
+// props로 부모요소 안에 묶인 자식요소 전달해줌
 export const TodoTemplate = ({children}) => {
   return (
     <TodoTemplateBlock>

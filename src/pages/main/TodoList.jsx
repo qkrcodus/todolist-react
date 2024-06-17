@@ -2,9 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 const TodoListBlock=styled.div`
-  
-    `;
-//함수형 컴포넌트
+  flex: 1; 
+  padding: 20px 32px;
+  padding-bottom: 48px;
+  overflow-y: auto;
+
+`;
+
 export const TodoList = () => {
   return (
     <div>
