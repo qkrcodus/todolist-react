@@ -1,5 +1,4 @@
 import React,{useState} from 'react'
-import './login.css'
 
 //함수형 컴포넌트 이름은 대문자로 시작해야한다. 안 그러면 리액트가 이를 일반 함수로 간주하게 된다.
 export const Login = () => {
@@ -7,7 +6,7 @@ export const Login = () => {
     const[id,setId]=useState('');
     const[password,setPassword]=useState('');
 
-    //사용자의 입력==이벤트 발생시 실행될 이벤트 핸들러 함수 정의
+    //사용자의 입력, 즉 이벤트 발생시 실행될 이벤트 핸들러 함수 정의
     const handleIdChange=(e)=>{
         setId(e.target.value)
     }

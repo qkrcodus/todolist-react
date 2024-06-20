@@ -32,7 +32,7 @@ export const TodoHead = () => {
         {/* date 라이브러리 가져오면 좋겠다 */}
         <h1>2024년 6월 17일</h1>
         <div className="day">월요일</div>
-        <div className="tasks-left">할 일 2개 남음</div>
+        <div className="tasks-left">할 일 1개 남음</div>
 
     </TodoHeadBlock>
   )
