@@ -51,7 +51,7 @@ const Text = styled.div`
     `}
 `;
 // done 이라는 prop에 따라 조건부로 다른 스타일이나 컴포넌트를 렌더링
-export const TodoItem = ({done,text}) => {
+export const TodoItem = ({id,done,text}) => {
   return (
     <TodoItemBlock>
       {/* 삼항 연산자를 이용하여 props인 */}
