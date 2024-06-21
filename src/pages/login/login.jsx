@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-
+import {Link} from "react-router-dom";
 //함수형 컴포넌트 이름은 대문자로 시작해야한다. 안 그러면 리액트가 이를 일반 함수로 간주하게 된다.
 export const Login = () => {
     // 상태변수인 id와 password를 정의해주고 , 초깃값 설정, 이들을 업데이트할 setID setPassword 정의까지
@@ -16,7 +16,7 @@ export const Login = () => {
 
   return (
     <div>
-        <h1>ToDo</h1>
+        <h1>ToDoList</h1>
         <form>
             <input 
             type="text" 
@@ -31,8 +31,9 @@ export const Login = () => {
             placeholder='비밀번호를 입력해주세요.'/>
 
             <button type="submit">로그인</button>
-
+           
         </form>
+        <Link to="/register">회원가입하러 가기</Link>
     </div>
   )
 }
