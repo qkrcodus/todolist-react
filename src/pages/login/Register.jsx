@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 
 
 const Title = styled.h2`
@@ -60,6 +61,8 @@ const StyledLink = styled(Link)`
 export const Register = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError]=useState(null);
+  const navigate=useNavigate();
 
   const handleIdChange = (e) => {
     setId(e.target.value);
@@ -69,11 +72,29 @@ export const Register = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
+    //폼 제출시 새로고침 방지
     e.preventDefault();
-    // 여기서 회원가입 처리 로직을 추가할 수 있습니다.
-    console.log('Id:', id);
-    console.log('Password:', password);
+    setError(null);
+    try{
+      const response=await axios.post('/api/users/register',{
+        username: id,
+        password: password,
+      });
+      if(response.status===200){
+        alert("회원가입 완료");
+        navigate('/login');
+      }}
+      catch(error){
+        if(error.response){
+          setError(error.reponse.data);
+        }else{
+          setError({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' });
+        }
+      }
+  
+    // console.log('Id:', id);
+    // console.log('Password:', password);
   };
 
   return (
