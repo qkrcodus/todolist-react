@@ -121,9 +121,9 @@ export const Register = () => {
             required
           />
         </FormGroup>
-        <SubmitButton type="submit">회원가입 완료</SubmitButton>
+        <SubmitButton type="submit">완료</SubmitButton>
       </form>
-      <StyledLink to="/login">로그인 화면으로</StyledLink>
+      <StyledLink to="/login">로그인 화면</StyledLink>
     </div>
   );
 };

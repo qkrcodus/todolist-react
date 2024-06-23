@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '../../App.css';
+import axios from 'axios';
 
 
 
@@ -52,6 +53,8 @@ const StyledLink = styled(Link)`
 export const Login = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [error,setError]=useState(null);
+  const navigate=useNavigate();
 
   const handleIdChange = (e) => {
     setId(e.target.value);
@@ -61,9 +64,33 @@ export const Login = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Handle login logic here
+    setError(null);
+    try {
+        const response= await axios.post('/api/users/login', {
+        username: id,
+        password: password,
+      });
+      if(response.status===200){
+        const {user_id}=response.data;
+        console.log(user_id,"로그인 완료");
+        navigate('/');
+      }
+    }catch(error){
+        if (error.response) {
+            const { detail } = error.response.data;
+            if (error.response.status === 400) {
+              setError({ general: 'username 또는 password가 필요합니다.' });
+            } else if (error.response.status === 404) {
+              setError({ general: '유저를 찾을 수 없습니다.' });
+            } else {
+              setError({ general: detail });
+            }
+          } else {
+            setError({ general: '로그인에 실패했습니다. 다시 시도해주세요.' });
+          }
+    }
   };
 
   return (
