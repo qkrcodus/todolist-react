@@ -7,14 +7,13 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-
-const StyledH1 = styled.h1`
+const Title = styled.h1`
   font-weight: bold;
   text-align: center;
   font-size: large;
 `;
-
-export const TodoWrapper = () => {
+//선택된 날짜를 props로
+export const TodoWrapper = ({ selectedDate }) => {
   const[todos,setTodos]=useState([])
   const [error, setError] = useState(null);
   const {user_id}=useParams(); // useParams훅으로 user_id가져온다
@@ -26,7 +25,7 @@ export const TodoWrapper = () => {
     try {
       const response = await axios.get(`/api/todos/${user_id}?month=${month}&day=${day}`);
       if (response.status === 200) {
-        setTodos(response.data);
+        setTodos(Array.isArray(response.data) ? response.data : []); // 받은 response todo가 배열
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -36,6 +35,13 @@ export const TodoWrapper = () => {
       }
     }
   };
+  //선택된 날짜가 변경될 때마다 해당 날짜의 기본 날짜 투두리스트 조회 
+  useEffect(() => {
+    const today = new Date();
+    const month = today.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줌
+    const day = today.getDate();
+    fetchTodos(month, day); // 기본 날짜로 투두리스트 조회
+  }, [selectedDate,user_id]);
 
   const addTodo=(todo)=>{
   // spread 연산자 ...  todos 객체배열을 복사한다. 
@@ -75,7 +81,7 @@ export const TodoWrapper = () => {
 
   return (
     <div className='TodoWrapper'>
-      <StyledH1>To Do List</StyledH1> 
+      <Title>To Do List</Title>
       <TodoForm addTodo={addTodo}/>
       {todos.map((todo) =>
         todo.isEditing ? (

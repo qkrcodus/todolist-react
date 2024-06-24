@@ -1,9 +1,11 @@
+// Calendar.jsx
 import React, { useState } from 'react';
 import './Calendar.css';
 import './reset.css';
 import styled from 'styled-components';
+
 const Button = styled.button`
- padding:5px;
+  padding: 5px;
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -16,7 +18,7 @@ const Button = styled.button`
   }
 `;
 
-const Calendar = () => {
+const Calendar = ({ onDateSelect }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -36,7 +38,11 @@ const Calendar = () => {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day).toISOString().split('T')[0];
       daysHtml.push(
-        <li key={day} className={date === todayStr ? 'current-date' : ''}>
+        <li
+          key={day}
+          className={date === todayStr ? 'current-date' : ''}
+          onClick={() => onDateSelect(currentYear, currentMonth + 1, day)}
+        >
           {day}
         </li>
       );
