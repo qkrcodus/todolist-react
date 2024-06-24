@@ -43,12 +43,31 @@ export const TodoWrapper = ({ selectedDate }) => {
     fetchTodos(month, day); // 기본 날짜로 투두리스트 조회
   }, [selectedDate,user_id]);
 
-  const addTodo=(todo)=>{
+  const addTodo=async(todo)=>{
   // spread 연산자 ...  todos 객체배열을 복사한다. 
   // TodoForm에서 받은 value를 넘겨받아 todo 객체를 생성하고 todos 배열에 추가하는 함수
   // setTodos([기존 배열 복사,복사한 배열 뒤에 새로운 객체 추가하여 새로운 배열 생성])
     setTodos([...todos,{id:uuidv4(), ...todo,completed:false,isEditing:false}])
     console.log(todos)
+    try{
+      const response=await axios.post(`/api/todos/${user_id}`, {
+        date: todo.date,
+        content: todo.content,
+      });
+      if (response.status === 200) {
+        setTodos([...todos, {
+          id: response.data.todo_id,
+          content: response.data.content,
+          date: response.data.date,
+          is_checked: response.data.is_checked,
+          emoji: response.data.emoji,
+          isEditing: false,
+          completed: false,
+        }]);
+      }
+    } catch (error) {
+      console.error('실패', error);
+    }
   }
   
   const toggleComplete = (id) => {

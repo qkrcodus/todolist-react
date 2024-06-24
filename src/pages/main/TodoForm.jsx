@@ -4,6 +4,11 @@ import React ,{useState} from 'react'
 export const TodoForm = ({addTodo}) => {
     const [value,setValue]=useState('')
     const [emoji, setEmoji] = useState('');
+    const [date, setDate] = useState('');
+
+    const handleDateChange = (e) => {
+      setDate(e.target.value);
+    };
 
     const handleEmojiChange = (e) => {
       setEmoji(e.target.value);
@@ -21,11 +26,13 @@ export const TodoForm = ({addTodo}) => {
         // value를 TodoState로 넘겨줘야한다. 어떻게? 부모요소에 
         addTodo({
           task: value,
+          date: date,
           emoji: emoji,
         });
         // 넘겨준 다음엔 초기화
         setValue('');
         setEmoji('');
+        setDate('');
     }
 
   return (
@@ -38,6 +45,12 @@ export const TodoForm = ({addTodo}) => {
         placeholder='이모지를 입력하세요'
         value={emoji}
         onChange={handleEmojiChange}
+      />
+       <input
+        type='datetime-local'
+        className='todo-input'
+        value={date}
+        onChange={handleDateChange}
       />
         <button type='submit' className='todo-btn'>추가</button>
     </form>
