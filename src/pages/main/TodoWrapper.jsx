@@ -12,12 +12,14 @@ const Title = styled.h1`
   text-align: center;
   font-size: large;
 `;
-//선택된 날짜를 props로
+
+//Form에서 선택된 날짜를 props로
 export const TodoWrapper = ({ selectedDate }) => {
   const[todos,setTodos]=useState([])
   const [error, setError] = useState(null);
-  const {user_id}=useParams(); // useParams훅으로 user_id가져온다
-  // TodoForm 에서 받은 value 를 넘겨줘야한다. 
+  // useParams훅으로 user_id가져온다
+  // const {user_id}=useParams(); 
+  const {user_id}='test_user_id'; 
 
   // 지정된 날짜의 투두리스트를 불러오는 함수
   const fetchTodos = async (month, day) => {
@@ -35,6 +37,7 @@ export const TodoWrapper = ({ selectedDate }) => {
       }
     }
   };
+
   //선택된 날짜가 변경될 때마다 해당 날짜의 기본 날짜 투두리스트 조회 
   useEffect(() => {
     const today = new Date();
@@ -44,16 +47,17 @@ export const TodoWrapper = ({ selectedDate }) => {
   }, [selectedDate,user_id]);
 
   const addTodo=async(todo)=>{
+  console.log('addTodo called', todo);
   // spread 연산자 ...  todos 객체배열을 복사한다. 
   // TodoForm에서 받은 value를 넘겨받아 todo 객체를 생성하고 todos 배열에 추가하는 함수
   // setTodos([기존 배열 복사,복사한 배열 뒤에 새로운 객체 추가하여 새로운 배열 생성])
-    setTodos([...todos,{id:uuidv4(), ...todo,completed:false,isEditing:false}])
-    console.log(todos)
     try{
       const response=await axios.post(`/api/todos/${user_id}`, {
         date: todo.date,
         content: todo.content,
+        emoji: todo.emoji,
       });
+  console.log('Server response', response);
       if (response.status === 200) {
         setTodos([...todos, {
           id: response.data.todo_id,
@@ -69,33 +73,72 @@ export const TodoWrapper = ({ selectedDate }) => {
       console.error('실패', error);
     }
   }
-  
-  const toggleComplete = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        // 기존 todo 객체의 모든 속성을 복사하면서 completed 속성을 반전
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+ 
+  const deleteTodo = async (id) => {
+    try {
+      const response = await axios.delete(`/api/todos/${user_id}/${id}`);
+      if (response.status === 204) {
+        setTodos(todos.filter((todo) => todo.id !== id));
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        if (error.response.data.detail === "유저를 찾을 수 없습니다.") {
+          setError("유저를 찾을 수 없습니다.");
+        } else if (error.response.data.detail === "To Do를 찾을 수 없습니다.") {
+          setError("To Do를 찾을 수 없습니다.");
+        }
+      } else {
+        setError('투두리스트 삭제에 실패했습니다.');
+      }
+    }
   }
   
-  const editTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, isEditing: !todo.isEditing } : todo
-      )
-    );
-  }
-  // setTodos는 매개변수로 Todos 값이 될 애들을 받는다.
-  const deleteTodo = (id) => setTodos(todos.filter((todo) => todo.id !== id));
+  const toggleComplete = async(id) => {
+    const todo = todos.find((todo) => todo.id === id);
+    if (!todo) return;
 
-  const editTask = (task, id) => {
+    try {
+      const response = await axios.patch(`/api/todos/${user_id}/${id}/check`, {
+        is_checked: !todo.completed,
+      });
+      if (response.status === 200) {
+        setTodos(
+          todos.map((todo) =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+          )
+        );
+      }
+    } catch (error) {
+      console.error('완료 여부 수정 실패', error);
+    }
+  };
+  
+  const editTodo = (task, id, emoji, date) => {
     setTodos(
       todos.map((todo) =>
-        todo.id === id ? { ...todo, task, isEditing: !todo.isEditing } : todo
+        todo.id === id ? { ...todo,content: task, emoji: emoji, date: date,  isEditing: !todo.isEditing } : todo
       )
     );
-  };
+  }
+  const editTask = async (task, id, emoji, date) => {
+    try {
+      const response = await axios.patch(`/api/todos/${user_id}/${todo_id}`, {
+        date: date,
+        content: task,
+        emoji: emoji,
+      });
+      if (response.status === 200) {
+        setTodos(
+          todos.map((todo) =>
+            todo.id === id ? { ...todo, content: task, emoji: emoji, date: date, isEditing: false } : todo
+          )
+        );
+      }
+    } catch (error) {
+      console.error('수정 실패', error);
+    }
+  }
+
 
 
   return (
@@ -104,7 +147,7 @@ export const TodoWrapper = ({ selectedDate }) => {
       <TodoForm addTodo={addTodo}/>
       {todos.map((todo) =>
         todo.isEditing ? (
-          <EditTodoForm editTodo={editTask} task={todo} />
+          <EditTodoForm key={todo.id} editTodo={editTask} task={todo} />
         ) : (
           <Todo
             key={todo.id}

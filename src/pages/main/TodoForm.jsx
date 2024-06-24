@@ -25,7 +25,7 @@ export const TodoForm = ({addTodo}) => {
         // console.log(value)
         // value를 TodoState로 넘겨줘야한다. 어떻게? 부모요소에 
         addTodo({
-          task: value,
+          content: value,
           date: date,
           emoji: emoji,
         });
