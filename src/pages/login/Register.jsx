@@ -44,18 +44,6 @@ const SubmitButton = styled.button`
     background-color: #0056b3;
   }
 `;
-const StyledLink = styled(Link)`
-  display: block;
-  margin-top: 10px;
-  color: #007bff;
-  text-decoration: none;
-  text-align:center;
-  font-size: 14px;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 
 
 export const Register = () => {
@@ -82,19 +70,18 @@ export const Register = () => {
         password: password,
       });
       if(response.status===200){
-        alert("회원가입 완료");
-        navigate('/login');
+        alert("회원가입 완료 ! 이제 로그인해주세요");
+        navigate('/');
       }}
       catch(error){
         if(error.response){
-          setError(error.reponse.data);
+          setError(error.response.data);
+          alert(error);
         }else{
           setError({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' });
+          alert(error);
         }
       }
-  
-    // console.log('Id:', id);
-    // console.log('Password:', password);
   };
 
   return (
@@ -123,7 +110,6 @@ export const Register = () => {
         </FormGroup>
         <SubmitButton type="submit">완료</SubmitButton>
       </form>
-      <StyledLink to="/login">로그인 화면</StyledLink>
     </div>
   );
 };

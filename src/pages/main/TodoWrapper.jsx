@@ -15,20 +15,18 @@ const Title = styled.h1`
 `;
 
 //Form에서 선택된 날짜를 props로
-export const TodoWrapper = ({ selectedDate }) => {
+export const TodoWrapper = ({ selectedDate ,user_id }) => {
   const[todos,setTodos]=useState([])
   const [error, setError] = useState(null);
-  // useParams훅으로 user_id가져온다
-  const {user_id}=useParams(); 
-  // const user_id='test_user_id'; 
 
-  // 지정된 날짜의 투두리스트를 불러오는 함수
-  const fetchTodos = async (month, day) => {
+  // 선택한 날짜, 유저의 투두 리스트 조회
+  const fetchTodos = async () => {
+    const { year, month, day } = selectedDate || {};
     setError(null);
     try {
       const response = await axios.get(`${BASE_URL}/api/todos/${user_id}?month=${month}&day=${day}`);
       if (response.status === 200) {
-        setTodos(Array.isArray(response.data) ? response.data : []); // 받은 response todo가 배열
+        setTodos(Array.isArray(response.data) ? response.data : []);
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -39,14 +37,14 @@ export const TodoWrapper = ({ selectedDate }) => {
     }
   };
 
-  //선택된 날짜가 변경될 때마다 해당 날짜의 기본 날짜 투두리스트 조회 
+  // 선택된 날짜가 변경될 때마다
   useEffect(() => {
-    const today = new Date();
-    const month = today.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줌
-    const day = today.getDate();
-    fetchTodos(month, day); // 기본 날짜로 투두리스트 조회
-  }, [selectedDate,user_id]);
-
+    if (selectedDate) {
+      fetchTodos();
+    }
+  }, [selectedDate, user_id]);
+ 
+  // 작성
   const addTodo=async(todo)=>{
   console.log({user_id});
   console.log('addTodo called', todo);
@@ -165,3 +163,5 @@ export const TodoWrapper = ({ selectedDate }) => {
     </div>
   )
 }
+
+export default TodoWrapper;

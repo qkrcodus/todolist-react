@@ -15,8 +15,9 @@ root.render(
     <Router>
       <Routes>
         {/* url에 들어갈 id를 변수처럼 ;동적 라우팅처리 방법중 path parameter */}
+        {/* useParams로 App 컴포넌트에서 받아오겠지 */}
         <Route path="/:user_id" element={<App />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
     </Router>

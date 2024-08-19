@@ -75,10 +75,12 @@ export const Login = () => {
       if(response.status===200){
         const {user_id}=response.data;
         console.log(user_id,"로그인 완료");
+        alert("로그인 완료 !")
         navigate(`/${user_id}`);
       }
     }catch(error){
         if (error.response) {
+          // 구조분해할당 detail 필드만 
             const { detail } = error.response.data;
             if (error.response.status === 400) {
               setError({ general: 'username 또는 password가 필요합니다.' });
