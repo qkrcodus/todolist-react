@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import '../../App.css';
 import axios from 'axios';
-
+const BASE_URL=import.meta.env.VITE_BASE_URL;
 
 
 const Title = styled.h1`
@@ -68,14 +68,14 @@ export const Login = () => {
     e.preventDefault();
     setError(null);
     try {
-        const response= await axios.post('/api/users/login', {
+        const response= await axios.post(`${BASE_URL}/api/users/login`, {
         username: id,
         password: password,
       });
       if(response.status===200){
         const {user_id}=response.data;
         console.log(user_id,"로그인 완료");
-        navigate('/');
+        navigate(`/${user_id}`);
       }
     }catch(error){
         if (error.response) {

@@ -3,7 +3,7 @@ import { Link ,useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
-
+const BASE_URL=import.meta.env.VITE_BASE_URL;
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 20px;
@@ -77,7 +77,7 @@ export const Register = () => {
     e.preventDefault();
     setError(null);
     try{
-      const response=await axios.post('/api/users/register',{
+      const response=await axios.post(`${BASE_URL}/api/users/register`,{
         username: id,
         password: password,
       });

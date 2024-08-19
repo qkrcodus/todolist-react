@@ -1,4 +1,4 @@
-import React ,{useState} from 'react'
+import React ,{useState, useEffect} from 'react'
 
 // 함수를 매개변수로 받는다. 부모->자식 콜백 함수를 전달하여 자식 컴포넌트의 데이터를 부모에게 전달 가능
 export const TodoForm = ({addTodo}) => {
@@ -6,6 +6,8 @@ export const TodoForm = ({addTodo}) => {
     const [emoji, setEmoji] = useState('');
     const [date, setDate] = useState('');
 
+
+  
     const handleDateChange = (e) => {
       setDate(e.target.value);
     };

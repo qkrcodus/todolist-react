@@ -6,6 +6,7 @@ import { EditTodoForm } from './EditTodoForm';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+const BASE_URL=import.meta.env.VITE_BASE_URL;
 
 const Title = styled.h1`
   font-weight: bold;
@@ -18,14 +19,14 @@ export const TodoWrapper = ({ selectedDate }) => {
   const[todos,setTodos]=useState([])
   const [error, setError] = useState(null);
   // useParams훅으로 user_id가져온다
-  // const {user_id}=useParams(); 
-  const {user_id}='test_user_id'; 
+  const {user_id}=useParams(); 
+  // const user_id='test_user_id'; 
 
   // 지정된 날짜의 투두리스트를 불러오는 함수
   const fetchTodos = async (month, day) => {
     setError(null);
     try {
-      const response = await axios.get(`/api/todos/${user_id}?month=${month}&day=${day}`);
+      const response = await axios.get(`${BASE_URL}/api/todos/${user_id}?month=${month}&day=${day}`);
       if (response.status === 200) {
         setTodos(Array.isArray(response.data) ? response.data : []); // 받은 response todo가 배열
       }
@@ -47,15 +48,16 @@ export const TodoWrapper = ({ selectedDate }) => {
   }, [selectedDate,user_id]);
 
   const addTodo=async(todo)=>{
+  console.log({user_id});
   console.log('addTodo called', todo);
   // spread 연산자 ...  todos 객체배열을 복사한다. 
   // TodoForm에서 받은 value를 넘겨받아 todo 객체를 생성하고 todos 배열에 추가하는 함수
   // setTodos([기존 배열 복사,복사한 배열 뒤에 새로운 객체 추가하여 새로운 배열 생성])
     try{
-      const response=await axios.post(`/api/todos/${user_id}`, {
+      const response=await axios.post(`${BASE_URL}/api/todos/${user_id}`, {
         date: todo.date,
         content: todo.content,
-        emoji: todo.emoji,
+
       });
   console.log('Server response', response);
       if (response.status === 200) {
@@ -76,7 +78,7 @@ export const TodoWrapper = ({ selectedDate }) => {
  
   const deleteTodo = async (id) => {
     try {
-      const response = await axios.delete(`/api/todos/${user_id}/${id}`);
+      const response = await axios.delete(`${BASE_URL}/api/todos/${user_id}/${id}`);
       if (response.status === 204) {
         setTodos(todos.filter((todo) => todo.id !== id));
       }
@@ -98,7 +100,7 @@ export const TodoWrapper = ({ selectedDate }) => {
     if (!todo) return;
 
     try {
-      const response = await axios.patch(`/api/todos/${user_id}/${id}/check`, {
+      const response = await axios.patch(`${BASE_URL}/api/todos/${user_id}/${id}/check`, {
         is_checked: !todo.completed,
       });
       if (response.status === 200) {
@@ -112,7 +114,7 @@ export const TodoWrapper = ({ selectedDate }) => {
       console.error('완료 여부 수정 실패', error);
     }
   };
-  
+  // 로컬 변경
   const editTodo = (task, id, emoji, date) => {
     setTodos(
       todos.map((todo) =>
@@ -120,9 +122,10 @@ export const TodoWrapper = ({ selectedDate }) => {
       )
     );
   }
+  //서버 변경
   const editTask = async (task, id, emoji, date) => {
     try {
-      const response = await axios.patch(`/api/todos/${user_id}/${todo_id}`, {
+      const response = await axios.patch(`${BASE_URL}/api/todos/${user_id}/${todo_id}`, {
         date: date,
         content: task,
         emoji: emoji,
