@@ -24,20 +24,20 @@ const TodoButton = styled.button`
   margin-left: 5px;
 `;
 
-export const Todo = ({ task, deleteTodo, editTodo, toggleComplete }) => {
+export const Todo = ({ todo, deleteTodo, editTodo, toggleComplete }) => {
   return (
     <TodoContainer>
       <TodoContent>
         <input
           type="checkbox"
-          checked={task.completed}
-          onChange={() => toggleComplete(task.id)}
+          checked={todo.is_checked}
+          onChange={() => toggleComplete(todo.todo_id)}
         />
-        <TodoText completed={task.completed}>{task.content}</TodoText>
+        <TodoText completed={todo.is_checked}>{todo.content}</TodoText>
       </TodoContent>
       <div>
-        <TodoButton onClick={() => editTodo(task.content, task.id, task.emoji, task.date)}>Edit</TodoButton>
-        <TodoButton onClick={() => deleteTodo(task.id)}>Delete</TodoButton>
+        <TodoButton onClick={() => editTodo(todo.content, todo.todo_id, todo.emoji, todo.date)}>Edit</TodoButton>
+        <TodoButton onClick={() => deleteTodo(todo.todo_id)}>Delete</TodoButton>
       </div>
     </TodoContainer>
   );

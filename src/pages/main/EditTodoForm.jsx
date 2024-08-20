@@ -1,9 +1,11 @@
 import React, {useState} from 'react'
 
-export const EditTodoForm = ({editTodo, task}) => {
-    const [value, setValue] = useState(task.content);
-    const [emoji, setEmoji] = useState(task.emoji);
-    const [date, setDate] = useState(task.date);
+export const EditTodoForm = ({editTodo, todo}) => {
+    const [content, setContent] = useState(todo.content);
+    const [emoji, setEmoji] = useState(todo.emoji);
+    const [date, setDate] = useState(todo.date);
+    const todo_id=todo.todo_id;
+    // const [todo_id,setTodoId]=useState(todo.todo_id);
 
     const handleDateChange = (e) => {
       setDate(e.target.value);
@@ -12,7 +14,7 @@ export const EditTodoForm = ({editTodo, task}) => {
       setEmoji(e.target.value);
     };
     const handleChange = (e) => {
-      setValue(e.target.value);
+      setContent(e.target.value);
     }
 
     // const handleSubmit = async (e) => {
@@ -42,10 +44,9 @@ export const EditTodoForm = ({editTodo, task}) => {
     //   }
     // };
     const handleSubmit = (e) => {
-      // 폼 제출시 페이지 새로고침 방지
+        console.log( '수정 완료 버튼 누름');
         e.preventDefault();
-        // edit todo
-        editTodo(value, task.id, emoji, date);
+        editTodo(content, todo_id, emoji, date);
       };
   return (
     <form onSubmit={handleSubmit} className="TodoForm">
@@ -53,19 +54,19 @@ export const EditTodoForm = ({editTodo, task}) => {
         type='text'
         className='todo-input'
         placeholder='할 일을 입력하세요'
-        value={value}
+        value={content}
         onChange={handleChange}
       />
       <input
         type='text'
-        className='todo-input'
-        placeholder='이모지를 입력하세요'
+        className='emoji-input'
+        placeholder='이모지'
         value={emoji}
         onChange={handleEmojiChange}
       />
       <input
         type='datetime-local'
-        className='todo-input'
+        className='date-input'
         value={date}
         onChange={handleDateChange}
       />

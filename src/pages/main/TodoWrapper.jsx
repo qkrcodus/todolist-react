@@ -1,6 +1,5 @@
 import React ,{useState, useEffect} from 'react'
 import { TodoForm } from './TodoForm'
-import { v4 as uuidv4 } from 'uuid'; // uudiv4 고유한 식별자를 생성하는 라이브러리 ,import { v4 as uuidv4 } from 'uuid'; 해줘야함, yarn add uuid
 import { Todo } from './Todo';
 import { EditTodoForm } from './EditTodoForm';
 import axios from 'axios';
@@ -21,13 +20,15 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
 
   // 선택한 날짜, 유저의 투두 리스트 조회
   const fetchTodos = async () => {
-    const { year, month, day } = selectedDate || {};
+    const { month, day } = selectedDate || {};
     setError(null);
     try {
       const response = await axios.get(`${BASE_URL}/api/todos/${user_id}?month=${month}&day=${day}`);
       if (response.status === 200) {
         setTodos(Array.isArray(response.data) ? response.data : []);
+        console.log("받은 데이터" , response.data);
       }
+      
     } catch (error) {
       if (error.response && error.response.status === 404) {
         setError('유저를 찾을 수 없습니다.');
@@ -37,7 +38,7 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
     }
   };
 
-  // 선택된 날짜가 변경될 때마다
+  // 선택된 날짜와 유저 변경될 때마다
   useEffect(() => {
     if (selectedDate) {
       fetchTodos();
@@ -48,14 +49,10 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
   const addTodo=async(todo)=>{
   console.log({user_id});
   console.log('addTodo called', todo);
-  // spread 연산자 ...  todos 객체배열을 복사한다. 
-  // TodoForm에서 받은 value를 넘겨받아 todo 객체를 생성하고 todos 배열에 추가하는 함수
-  // setTodos([기존 배열 복사,복사한 배열 뒤에 새로운 객체 추가하여 새로운 배열 생성])
     try{
       const response=await axios.post(`${BASE_URL}/api/todos/${user_id}`, {
         date: todo.date,
         content: todo.content,
-
       });
   console.log('Server response', response);
       if (response.status === 200) {
@@ -74,6 +71,7 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
     }
   }
  
+  //삭제
   const deleteTodo = async (id) => {
     try {
       const response = await axios.delete(`${BASE_URL}/api/todos/${user_id}/${id}`);
@@ -93,6 +91,7 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
     }
   }
   
+  //토글
   const toggleComplete = async(id) => {
     const todo = todos.find((todo) => todo.id === id);
     if (!todo) return;
@@ -112,26 +111,19 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
       console.error('완료 여부 수정 실패', error);
     }
   };
-  // 로컬 변경
-  const editTodo = (task, id, emoji, date) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo,content: task, emoji: emoji, date: date,  isEditing: !todo.isEditing } : todo
-      )
-    );
-  }
-  //서버 변경
-  const editTask = async (task, id, emoji, date) => {
+
+  //수정
+  const editTodo = async (content, todo_id, emoji, date) => {
     try {
       const response = await axios.patch(`${BASE_URL}/api/todos/${user_id}/${todo_id}`, {
         date: date,
-        content: task,
+        content: content,
         emoji: emoji,
       });
       if (response.status === 200) {
         setTodos(
           todos.map((todo) =>
-            todo.id === id ? { ...todo, content: task, emoji: emoji, date: date, isEditing: false } : todo
+            todo.todo_id === todo_id ? { ...todo, content: content, emoji: emoji, date: date, isEditing: !todo.isEditing } : todo
           )
         );
       }
@@ -141,25 +133,25 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
   }
 
 
-
   return (
     <div className='TodoWrapper'>
       <Title>To Do List</Title>
+      {/* 콜백함수 속성 */}
       <TodoForm addTodo={addTodo}/>
-      {todos.map((todo) =>
-        todo.isEditing ? (
-          <EditTodoForm key={todo.id} editTodo={editTask} task={todo} />
+      {todos.map((todo) =>{
+        console.log("투두 아이디랑 수정 여부", todo.todo_id, todo.isEditing);
+        return todo.isEditing ? (
+          <EditTodoForm key={todo.todo_id} editTodo={editTodo} todo={todo} />
         ) : (
           <Todo
-            key={todo.id}
-            task={todo}
+            key={todo.todo_id}
+            todo={todo}
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             toggleComplete={toggleComplete}
           />
-        )
+        )}
       )}
-      
     </div>
   )
 }

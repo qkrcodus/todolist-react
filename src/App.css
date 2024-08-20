@@ -35,7 +35,8 @@ h1 {
   margin-bottom: 1rem;
 }
 
-.todo-input {
+.todo-input
+ {
   outline: none;
   background: none;
   border: 1px solid blue;
@@ -45,9 +46,33 @@ h1 {
   width: 300px;
   color: black;
 }
+.date-input{
+  outline: none;
+  background: none;
+  border: 1px solid blue;
+  padding: 0.4rem 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  width: 300px;
+  color: black;
+}
+.emoji-input{
+  outline: none;
+  background: none;
+  border: 1px solid blue;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  width: 80px;
+  color: black;
+
+}
 
 .todo-input::placeholder {
-  color: #ffffff4d;
+  color: black;
+}
+.emoji-input::placeholder{
+  color: black;
 }
 
 .todo-btn {
