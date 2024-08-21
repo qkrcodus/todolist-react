@@ -31,7 +31,7 @@ export const Todo = ({ todo, deleteTodo, editTodo, toggleComplete }) => {
         <input
           type="checkbox"
           checked={todo.is_checked}
-          onChange={() => toggleComplete(todo.todo_id)}
+          onChange={() => { console.log("토글 버튼 누름 "); toggleComplete(todo.todo_id)}}
         />
         <TodoText $completed={todo.is_checked}>{todo.content}</TodoText>
       </TodoContent>

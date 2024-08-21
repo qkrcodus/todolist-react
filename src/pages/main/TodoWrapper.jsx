@@ -95,11 +95,12 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
   
   //토글
   const toggleComplete = async(id) => {
-    const todo = todos.find((todo) => todo.id === id);
+    const todo = todos.find((todo) => todo.todo_id === id);
+    console.log("토글 함수 실행1");
     if (!todo) return;
-
+    console.log("토글 함수 실행2");
     try {
-      console.log("토글 버튼 누름");
+      console.log("토글 버튼 try문 안에 들어옴");
       const response = await axios.patch(`${BASE_URL}/api/todos/${user_id}/${id}/check`, {
         is_checked: !todo.is_checked,
       });
