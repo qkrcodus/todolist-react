@@ -17,7 +17,7 @@ const TodoContent = styled.div`
 
 const TodoText = styled.span`
   margin-left: 10px;
-  text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
+  text-decoration: ${({ $completed }) => ($completed ? 'line-through' : 'none')};
 `;
 
 const TodoButton = styled.button`
@@ -33,7 +33,7 @@ export const Todo = ({ todo, deleteTodo, editTodo, toggleComplete }) => {
           checked={todo.is_checked}
           onChange={() => toggleComplete(todo.todo_id)}
         />
-        <TodoText completed={todo.is_checked}>{todo.content}</TodoText>
+        <TodoText $completed={todo.is_checked}>{todo.content}</TodoText>
       </TodoContent>
       <div>
         <TodoButton onClick={() => editTodo(todo.content, todo.todo_id, todo.emoji, todo.date)}>Edit</TodoButton>

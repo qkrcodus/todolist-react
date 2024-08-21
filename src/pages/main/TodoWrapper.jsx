@@ -74,10 +74,12 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
   //삭제
   const deleteTodo = async (id) => {
     try {
+      console.log("삭제 클릭");
       const response = await axios.delete(`${BASE_URL}/api/todos/${user_id}/${id}`);
       if (response.status === 204) {
         setTodos(todos.filter((todo) => todo.id !== id));
       }
+      window.location.reload();
     } catch (error) {
       if (error.response && error.response.status === 404) {
         if (error.response.data.detail === "유저를 찾을 수 없습니다.") {
@@ -97,18 +99,19 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
     if (!todo) return;
 
     try {
+      console.log("토글 버튼 누름");
       const response = await axios.patch(`${BASE_URL}/api/todos/${user_id}/${id}/check`, {
-        is_checked: !todo.completed,
+        is_checked: !todo.is_checked,
       });
       if (response.status === 200) {
         setTodos(
           todos.map((todo) =>
-            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+            todo.todo_id === id ? { ...todo, is_checked: !todo.is_checked } : todo
           )
         );
       }
     } catch (error) {
-      console.error('완료 여부 수정 실패', error);
+      console.error('토글 여부 수정 실패', error);
     }
   };
 
