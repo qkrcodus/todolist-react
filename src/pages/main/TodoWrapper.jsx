@@ -10,9 +10,20 @@ const BASE_URL=import.meta.env.VITE_BASE_URL;
 const Title = styled.h1`
   font-weight: bold;
   text-align: center;
-  font-size: large;
+  font-size: 25px;
 `;
+const Ganada=styled.button`
+  font-weight: bold;
+  text-align: center;
+  font-size: 15px;
+   background: blue;
+  color: #fff;
+  border: none;
+  padding: 0.55rem;
+  cursor: pointer;
+  border-radius: 1rem;
 
+`
 //Form에서 선택된 날짜를 props로
 export const TodoWrapper = ({ selectedDate ,user_id }) => {
   const[todos,setTodos]=useState([])
@@ -150,11 +161,26 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
       console.log("이모지 수정 실패", error);
     }
   }
+  //불러온 데이터 정렬
+  const fetchsortedTodos=async()=>{
+    const { month, day } = selectedDate || {};
+    try{
+      const response=await axios.get(`${BASE_URL}/api/todos/${user_id}/sort?month=${month}&day=${day}`);
+      if (response.status === 200) {
+        setTodos(response.data);  // 받은 데이터로 상태 업데이트
+      } else {
+        console.error('정렬된 값 받아오기는 성공');
+      }
 
+    }catch(error){
+      console.log("정렬 실패",error)
+    }
+  }
 
   return (
     <div className='TodoWrapper'>
       <Title>To Do List</Title>
+      <Ganada onClick={fetchsortedTodos}>정렬</Ganada>
       {/* 콜백함수 속성 */}
       <TodoForm addTodo={addTodo}/>
       {todos.map((todo) =>{

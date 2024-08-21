@@ -53,7 +53,7 @@ export const Todo = ({ todo, deleteTodo, editTodo, toggleComplete ,editEmoji }) 
         <option value="😞">😞</option>
         <option value="😤">😤</option>
         </select>
-        <TodoButton onClick={() => editTodo(todo.content, todo.todo_id, todo.emoji, todo.date)}>Edit</TodoButton>
+        <TodoButton onClick={() => editTodo(todo.content, todo.todo_id, todo.date)}>Edit</TodoButton>
         <TodoButton onClick={() => deleteTodo(todo.todo_id)}>Delete</TodoButton>
       </div>
     </TodoContainer>
