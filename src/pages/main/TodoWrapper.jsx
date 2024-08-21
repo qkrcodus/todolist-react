@@ -37,13 +37,12 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
       }
     }
   };
-
-  // 선택된 날짜와 유저 변경될 때마다
-  useEffect(() => {
-    if (selectedDate) {
-      fetchTodos();
-    }
-  }, [selectedDate, user_id]);
+    // 선택된 날짜와 유저 변경될 때마다
+    useEffect(() => {
+      if (selectedDate) {
+        fetchTodos();
+      }
+    }, [selectedDate, user_id]);
  
   // 작성
   const addTodo=async(todo)=>{
@@ -70,7 +69,6 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
       console.error('실패', error);
     }
   }
- 
   //삭제
   const deleteTodo = async (id) => {
     try {
@@ -92,7 +90,6 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
       }
     }
   }
-  
   //토글
   const toggleComplete = async(id) => {
     const todo = todos.find((todo) => todo.todo_id === id);
@@ -115,24 +112,42 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
       console.error('토글 여부 수정 실패', error);
     }
   };
-
   //수정
-  const editTodo = async (content, todo_id, emoji, date) => {
+  const editTodo = async (content, todo_id, date) => {
     try {
       const response = await axios.patch(`${BASE_URL}/api/todos/${user_id}/${todo_id}`, {
         date: date,
         content: content,
-        emoji: emoji,
       });
       if (response.status === 200) {
         setTodos(
           todos.map((todo) =>
-            todo.todo_id === todo_id ? { ...todo, content: content, emoji: emoji, date: date, isEditing: !todo.isEditing } : todo
+            todo.todo_id === todo_id ? { ...todo, content: content, date: date, isEditing: !todo.isEditing } : todo
           )
         );
       }
     } catch (error) {
       console.error('수정 실패', error);
+    }
+  }
+  //이모지 수정
+  const editEmoji=async(todo_id, emoji)=>{
+    console.log("에딧이모지 실행")
+    try{
+      const response=await axios.patch(`${BASE_URL}/api/todos/${user_id}/${todo_id}/reviews`,{
+        emoji: emoji,
+      })
+      if(response.status === 200){
+        setTodos(
+          todos.map((todo) =>
+            todo.todo_id === todo_id ? { ...todo, emoji: emoji} : todo
+          )
+        );
+
+      }
+
+    }catch(error){
+      console.log("이모지 수정 실패", error);
     }
   }
 
@@ -153,6 +168,7 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
             deleteTodo={deleteTodo}
             editTodo={editTodo}
             toggleComplete={toggleComplete}
+            editEmoji={editEmoji}
           />
         )}
       )}
