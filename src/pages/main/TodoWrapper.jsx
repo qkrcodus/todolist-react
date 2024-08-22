@@ -24,6 +24,35 @@ const Ganada=styled.button`
   border-radius: 1rem;
 
 `
+const Select=styled.select`
+margin-left: 1rem;
+ font-weight: normal;
+  text-align: center;
+  font-size: 15px;
+   background: blue;
+  color: #fff;
+  border: none;
+  padding: 0.55rem;
+  cursor: pointer;
+  border-radius: 1rem;
+`
+const Month = ({ onMonthChange }) => {
+  const [month, setMonth] = useState(new Date().getMonth() + 1);  // 현재 월을 기본값으로 설정
+
+  useEffect(() => {
+    onMonthChange(month);  // 월이 변경될 때마다 상위 컴포넌트에 알림
+  }, [month, onMonthChange]);
+
+  return (
+    <Select value={month} onChange={(e) => setMonth(e.target.value)}>
+      {Array.from({ length: 12 }, (_, i) => (
+        <option key={i + 1} value={i + 1}>
+          {i + 1}월
+        </option>
+      ))}
+    </Select>
+  );
+};
 //Form에서 선택된 날짜를 props로
 export const TodoWrapper = ({ selectedDate ,user_id }) => {
   const[todos,setTodos]=useState([])
@@ -176,11 +205,22 @@ export const TodoWrapper = ({ selectedDate ,user_id }) => {
       console.log("정렬 실패",error)
     }
   }
+  //달 별 투두 불러오기
+  const fetchTodosByMonth= async(month)=>{
+    try{
+      const response=await axios.get(`${BASE_URL}/api/todos/${user_id}/search?month=${month}`);
+      setTodos(response.data);
+    }catch(error){
+      console.log(user_id ,month)
+      console.log('달 기준 불러오는데 실패', error);
+    }
+  }
 
   return (
     <div className='TodoWrapper'>
       <Title>To Do List</Title>
       <Ganada onClick={fetchsortedTodos}>정렬</Ganada>
+      <Month onMonthChange={fetchTodosByMonth}></Month>
       {/* 콜백함수 속성 */}
       <TodoForm addTodo={addTodo}/>
       {todos.map((todo) =>{
